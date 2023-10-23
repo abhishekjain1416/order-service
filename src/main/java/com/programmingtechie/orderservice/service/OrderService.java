@@ -3,7 +3,6 @@ package com.programmingtechie.orderservice.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class OrderService {
     public OrderRepository orderRepository;
 
     @Autowired
-    public WebClient webClient;
+    public WebClient.Builder webClientBuilder;
 
     public void placeOrder(OrderRequest orderRequest){
         Order order = new Order();
@@ -42,8 +41,8 @@ public class OrderService {
             .toList();
 
         // Call Inventory Service to check if product is in stock
-        InventoryResponse[] inventoryResponsesArray = webClient.get()
-            .uri("http://localhost:8082/api/inventory",
+        InventoryResponse[] inventoryResponsesArray = webClientBuilder.build().get()
+            .uri("http://inventory-service/api/inventory",
                 uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
             .retrieve()
             .bodyToMono(InventoryResponse[].class)
