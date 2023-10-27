@@ -15,3 +15,8 @@ It uses inter-process synchronous communication with the Inventory Service to en
 Configured the service discovery mechanism to obtain the IP addresses or endpoints of available Inventory Service instances.
 
 ![Communication with Service Discovery](https://github.com/abhishekjain1416/order-service/assets/142833334/710f23f9-b4b9-4985-9efc-c1e4b54c6ea5)
+
+
+## Class Diagram
+![UML Class Diagram for Order Service](https://github.com/abhishekjain1416/order-service/assets/142833334/e1002ddb-7f2b-4c51-b187-60e16fdee7d8)
+
