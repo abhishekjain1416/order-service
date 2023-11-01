@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.programmingtechie.orderservice.dto.InventoryResponse;
 import com.programmingtechie.orderservice.dto.OrderLineItemsDto;
 import com.programmingtechie.orderservice.dto.OrderRequest;
+import com.programmingtechie.orderservice.event.OrderPlacedEvent;
 import com.programmingtechie.orderservice.model.Order;
 import com.programmingtechie.orderservice.model.OrderLineItems;
 import com.programmingtechie.orderservice.repository.OrderRepository;
@@ -23,6 +25,9 @@ public class OrderService {
 
     @Autowired
     public WebClient.Builder webClientBuilder;
+
+    @Autowired
+    private KafkaTemplate<String,OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest){
         Order order = new Order();
@@ -53,6 +58,7 @@ public class OrderService {
 
         if(allProductsInStock) {
             orderRepository.save(order);
+            kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
             return "Order Placed Successfully.";
         }
         else {
