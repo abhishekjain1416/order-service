@@ -4,6 +4,8 @@ The Order Service is a microservice designed to place orders online for shopping
 
 ## Architecture
 Here's a brief explanation of the architecture of a Order Service:
+![architecture-E-Commerce Application drawio](https://github.com/abhishekjain1416/order-service/assets/142833334/971e98d1-eab2-49f8-913c-013c1adca26a)
+
 
 ### Inter Process Communication
 It uses inter-process synchronous communication with the Inventory Service to ensure that the available inventory is up-to-date and can fulfill incoming orders.
