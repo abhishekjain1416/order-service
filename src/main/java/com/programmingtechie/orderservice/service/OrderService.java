@@ -33,6 +33,7 @@ public class OrderService {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
 
+        // Map OrderLineItemsDto to OrderLineItems and collect them into a list
         List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtoList()
             .stream()
             .map(this::mapToDto)
@@ -53,9 +54,11 @@ public class OrderService {
             .bodyToMono(InventoryResponse[].class)
             .block();
 
+        // Check if all products are in stock
         Boolean allProductsInStock = Arrays.stream(inventoryResponsesArray)
             .allMatch(InventoryResponse::getIsInStock);
 
+        // If all products are in stock, save the order and send a notification
         if(allProductsInStock) {
             orderRepository.save(order);
             kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));

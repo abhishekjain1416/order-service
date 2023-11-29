@@ -24,6 +24,11 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     
+    /**
+     * This method asynchronously places an order using CompletableFuture.
+     * @param orderRequest
+     * @return
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
@@ -31,6 +36,10 @@ public class OrderController {
     @Retry(name = "inventory")
     public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest){
         
+        /**
+         * CompletableFuture.supplyAsync() is used to perform the order placement asynchronously.
+         * The lambda expression inside supplyAsync() represents the task that will be executed asynchronously.
+         */
         return CompletableFuture.supplyAsync(() -> 
             orderService.placeOrder(orderRequest));
     }
