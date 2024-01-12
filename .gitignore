@@ -25,3 +25,11 @@ replay_pid*
 
 /bin/
 target/
+
+.factorypath
+.mvn/
+.project
+.settings/
+mvnw
+mvnw.cmd
+.classpath
