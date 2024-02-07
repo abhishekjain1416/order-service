@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.programmingtechie.orderservice.dto.OrderRequest;
+import com.programmingtechie.orderservice.dto.OrderResponse;
 import com.programmingtechie.orderservice.service.OrderService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -34,7 +35,7 @@ public class OrderController {
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
     @TimeLimiter(name = "inventory")
     @Retry(name = "inventory")
-    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest){
+    public CompletableFuture<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest){
         
         /**
          * CompletableFuture.supplyAsync() is used to perform the order placement asynchronously.
@@ -44,8 +45,12 @@ public class OrderController {
             orderService.placeOrder(orderRequest));
     }
 
-    public CompletableFuture<String> fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException){
-        return CompletableFuture.supplyAsync(() -> 
-            "Oops! Something went wrong, please order after some time!");
+    public CompletableFuture<OrderResponse> fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException){
+
+    	OrderResponse response = new OrderResponse();
+    	response.setMessageCode("4000");
+    	response.setMessage("Oops! Something went wrong, please order after some time!");
+
+    	return CompletableFuture.supplyAsync(() -> response);
     }
 }

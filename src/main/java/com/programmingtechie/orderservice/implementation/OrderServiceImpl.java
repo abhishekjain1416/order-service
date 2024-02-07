@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.programmingtechie.orderservice.dto.InventoryResponse;
 import com.programmingtechie.orderservice.dto.OrderLineItemsDto;
 import com.programmingtechie.orderservice.dto.OrderRequest;
+import com.programmingtechie.orderservice.dto.OrderResponse;
 import com.programmingtechie.orderservice.event.OrderPlacedEvent;
 import com.programmingtechie.orderservice.model.Order;
 import com.programmingtechie.orderservice.model.OrderLineItems;
@@ -31,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private KafkaTemplate<String,OrderPlacedEvent> kafkaTemplate;
 
     @Override
-    public String placeOrder(OrderRequest orderRequest){
+    public OrderResponse placeOrder(OrderRequest orderRequest){
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
 
@@ -60,15 +61,22 @@ public class OrderServiceImpl implements OrderService {
         Boolean allProductsInStock = Arrays.stream(inventoryResponsesArray)
             .allMatch(InventoryResponse::getIsInStock);
 
+        OrderResponse response = new OrderResponse();
+
         // If all products are in stock, save the order and send a notification
         if(allProductsInStock) {
             orderRepository.save(order);
             kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
-            return "Order Placed Successfully.";
+
+            response.setMessageCode("2000");
+            response.setMessage("Order Placed Successfully.");
         }
         else {
-        	return "Products are not in stock, please try again later.";
+        	response.setMessageCode("2005");
+            response.setMessage("Products are not in stock, please try again later.");
         }
+
+        return response;
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto){
