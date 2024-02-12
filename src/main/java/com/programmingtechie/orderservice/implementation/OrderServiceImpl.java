@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.programmingtechie.orderservice.enums.OrderEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -68,12 +69,12 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
 
-            response.setMessageCode("2000");
-            response.setMessage("Order Placed Successfully.");
+            response.setMessageCode(OrderEnum.ORDER_PLACED_SUCCESSFULLY.getSuccessCode());
+            response.setMessage(OrderEnum.ORDER_PLACED_SUCCESSFULLY.getMessage());
         }
         else {
-        	response.setMessageCode("2005");
-            response.setMessage("Products are not in stock, please try again later.");
+        	response.setMessageCode(OrderEnum.PRODUCTS_OUT_OF_STOCK.getErrorCode());
+            response.setMessage(OrderEnum.PRODUCTS_OUT_OF_STOCK.getMessage());
         }
 
         return response;

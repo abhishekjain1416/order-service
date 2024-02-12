@@ -2,6 +2,7 @@ package com.programmingtechie.orderservice.controller;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.programmingtechie.orderservice.enums.OrderEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,8 +50,8 @@ public class OrderController {
     public CompletableFuture<OrderResponse> fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException){
 
     	OrderResponse response = new OrderResponse();
-    	response.setMessageCode("4000");
-    	response.setMessage("Oops! Something went wrong, please order after some time!");
+    	response.setMessageCode(OrderEnum.SOMETHING_WENT_WRONG.getErrorCode());
+    	response.setMessage(OrderEnum.SOMETHING_WENT_WRONG.getMessage());
 
     	return CompletableFuture.supplyAsync(() -> response);
     }
