@@ -33,3 +33,4 @@ target/
 mvnw
 mvnw.cmd
 .classpath
+.idea/

@@ -2,6 +2,7 @@ package com.programmingtechie.orderservice.controller;
 
 import java.util.concurrent.CompletableFuture;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class OrderController {
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
     @TimeLimiter(name = "inventory")
     @Retry(name = "inventory")
-    public CompletableFuture<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest){
+    public CompletableFuture<OrderResponse> placeOrder(@Valid @RequestBody OrderRequest orderRequest){
         
         /**
          * CompletableFuture.supplyAsync() is used to perform the order placement asynchronously.
