@@ -9,5 +9,5 @@ import lombok.Getter;
 @Getter
 public class OrderRequest {
     @NotEmpty @Valid
-    private List<OrderLineItemsDto> orderLineItemsDtoList;
+    private List<OrderLineItemsDto> orderList;
 }

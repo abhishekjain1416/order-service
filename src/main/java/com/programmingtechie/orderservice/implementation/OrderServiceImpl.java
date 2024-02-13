@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderNumber(UUID.randomUUID().toString());
 
         // Map OrderLineItemsDto to OrderLineItems and collect them into a list
-        List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtoList()
+        List<OrderLineItems> orderLineItems = orderRequest.getOrderList()
             .stream()
             .map(this::mapToDto)
             .toList();
