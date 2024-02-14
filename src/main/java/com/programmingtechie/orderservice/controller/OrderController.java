@@ -3,14 +3,17 @@ package com.programmingtechie.orderservice.controller;
 import java.util.concurrent.CompletableFuture;
 
 import com.programmingtechie.orderservice.enums.OrderEnum;
+import com.programmingtechie.orderservice.validation.OrderValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
 
 import com.programmingtechie.orderservice.dto.OrderRequest;
 import com.programmingtechie.orderservice.dto.OrderResponse;
@@ -26,6 +29,14 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderValidation orderValidation;
+
+    @InitBinder("orderRequest")
+    public void customBinding(WebDataBinder binder) {
+        binder.addValidators(orderValidation);
+    }
     
     /**
      * This method asynchronously places an order using CompletableFuture.
